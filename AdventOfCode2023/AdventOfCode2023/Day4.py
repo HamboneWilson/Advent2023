@@ -24,26 +24,56 @@ for line in lines:
     
     totalValue += cardValue
 
-print(totalValue)
+print("Total value = " + str(totalValue))
 
 #part2
-totalScratchCards = 0
-
+#convert cards to a dictionary of car number key to list containing card and winners strings
+cardDict = {}
 for line in lines:
-    matches = 0
     line = line.strip()
+    lineKey = line.split(':')[0]
+    lineKey = int(lineKey.lstrip('Card '))
+    
     line = line.replace('  ', ' 0')
     line = line.split(': ')[1]
     sides = line.split(' | ')
     card = sides[0].split(' ')
     winners = sides[1].split(' ')
     
+    cardDict[lineKey] = [card,winners]
+    
+    
+totalScratchCards = 0
+currentCardKeys = list(cardDict.keys())
+nextCardKeys = []
+
+idx = 0
+while idx < len(currentCardKeys):
+    key = currentCardKeys[idx]
+    card = cardDict[key][0]
+    winners = cardDict[key][1]
+    
+    cardsToAdd = 0
+    keyToAdd = key + 1
+    
     for num in card:
         if num in winners:
-            matches += 1
+            cardsToAdd += 1
+            
+    while cardsToAdd > 0:
+        nextCardKeys.append(keyToAdd)
+        cardsToAdd -= 1
+        keyToAdd += 1
     
-    totalValue += cardValue
+    idx += 1
+    
+    if idx == len(currentCardKeys):
+        totalScratchCards += len(currentCardKeys)
+        currentCardKeys = nextCardKeys
+        nextCardKeys = []
+        idx = 0
+        
 
-print(totalValue)
+print('Total cards ' + str(totalScratchCards))
 
     
